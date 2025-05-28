@@ -1,0 +1,92 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Documentation
+dev-docs/
+dev-docs.json
+zoom-rtms-workflow.md
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.log
+
+# Media files generated during testing
+*.raw
+*.wav
+recording_*
+*.pcm
+*.raw.pcm
+
+# Build artifacts
+dist/
+build/
+out/
+.next/
+.nuxt/
+
+# Debugging
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Coverage directory used for tests
+coverage/
+
+# Typescript build artifacts
+*.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
+test_samples/
+
+# Cache directories
+.npm
+.eslintcache
+.cache/
+
+# RTMS specific
+rtms-logs/
+*.raw.pcm
+rtms-sdk/
+rtms-sdk-logs/
+rtms-sdk-cache/
+
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.pytest_cache/
+.coverage
+htmlcov/ 
+
+__pycache__
