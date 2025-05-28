@@ -18,6 +18,7 @@ async def webhook(request: Request):
     try:
         body = await request.json()
         await workflow.run(body=body)
+        
     except Exception as e:
         print("Failed to parse JSON body:", e)
         body = {}

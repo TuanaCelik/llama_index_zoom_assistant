@@ -10,7 +10,7 @@ import requests
 from datetime import datetime
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
-from typing import List, Union, Literal
+from typing import List, Literal
 
 from llama_index.core.workflow import StartEvent, StopEvent, Workflow, step, Event, Context
 from llama_index.core.llms import ChatMessage
@@ -41,7 +41,7 @@ class SummarizeMeeting(Event):
     transcript: str
 
 class ActionItems(Event):
-    items: List[str]
+    to_dos: List[str]
 
 class Meeting(BaseModel):
     summary: str = Field(description="The summary of the meeting")
@@ -191,12 +191,12 @@ class NoteTakerWorkflow(Workflow):
                 self.active_connections[meeting_uuid].pop("media", None)
 
     @step
-    async def start_zoom_meeting(self, ev: StartEvent, ctx: Context) -> CreateNotionPage | SummarizeMeeting | CheckForActions:
-        event = ev.body.get("event")
+    async def start_note_taker(self, ev: StartEvent, ctx: Context) -> CreateNotionPage | SummarizeMeeting | CheckForActions:
+        zoom_event = ev.body.get("event")
         payload = ev.body.get("payload", {})
 
         # URL validation challenge
-        if event == "endpoint.url_validation" and payload.get("plainToken"):
+        if zoom_event == "endpoint.url_validation" and payload.get("plainToken"):
             hash_obj = hmac.new(
                 ZOOM_SECRET_TOKEN.encode(),
                 payload["plainToken"].encode(),
@@ -209,7 +209,7 @@ class NoteTakerWorkflow(Workflow):
             }
 
         #  Handle meeting.rtms_started - Triggers the WebSocket connection flow
-        if event == "meeting.rtms_started":
+        if zoom_event == "meeting.rtms_started":
             transcript_chunk = []
             print("RTMS Started event received")
             meeting_uuid = payload.get("meeting_uuid")
@@ -221,7 +221,7 @@ class NoteTakerWorkflow(Workflow):
                                 self.handle_signaling_connection(meeting_uuid, rtms_stream_id, server_urls, transcript_chunk, ctx)
                             )
         # Handle meeting.rtms_stopped
-        if event == "meeting.rtms_stopped":
+        if zoom_event == "meeting.rtms_stopped":
             meeting_uuid = payload.get("meeting_uuid")
             if meeting_uuid in self.active_connections:
                 connections = self.active_connections[meeting_uuid]
@@ -291,12 +291,12 @@ class NoteTakerWorkflow(Workflow):
                             {
                                 "type": "text",
                                 "text": {
-                                    "content": item,
+                                    "content": to_do,
                                 },
                             }
                         ]
                     },
-                } for item in ev.items
+                } for to_do in ev.to_dos
             ]
         }
         edit_url = f"https://api.notion.com/v1/blocks/{self.page_id}/children"
