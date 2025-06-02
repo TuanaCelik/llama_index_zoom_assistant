@@ -55,6 +55,7 @@ class NoteTakerWorkflow(Workflow):
     active_connections = {}
     full_transcript = ""
     page_id = ""
+    meeting_uuid = None
 
     def generate_signature(self, client_id, meeting_uuid, stream_id, client_secret):
         message = f"{client_id},{meeting_uuid},{stream_id}"
@@ -66,6 +67,7 @@ class NoteTakerWorkflow(Workflow):
             async with websockets.connect(server_url) as ws:
                 if meeting_uuid not in self.active_connections:
                     self.active_connections[meeting_uuid] = {}
+                    ctx.send_event(CreateNotionPage(title=f"Zoom Meeting {datetime.today().strftime('%Y-%m-%d')}"))
                 self.active_connections[meeting_uuid]["signaling"] = ws
 
                 # Step 2: Send SIGNALING_HAND_SHAKE_REQ
@@ -80,7 +82,6 @@ class NoteTakerWorkflow(Workflow):
                 }
                 await ws.send(json.dumps(handshake))
                 print("Sent signaling handshake (SIGNALING_HAND_SHAKE_REQ)")
-                ctx.send_event(CreateNotionPage(title=f"Zoom Meeting {datetime.today().strftime('%Y-%m-%d')}"))
 
                 while True:
                     try:
@@ -276,7 +277,7 @@ class NoteTakerWorkflow(Workflow):
         response = await sllm.achat([ChatMessage(role="system", content=system_prompt), ChatMessage(role="user", content=str(ev.transcript_chunk))])
         
         if response.raw.action == "create_action_items":
-            return ActionItems(items=response.raw.action_items)
+            return ActionItems(to_dos=response.raw.action_items)
         return None
     
     @step
