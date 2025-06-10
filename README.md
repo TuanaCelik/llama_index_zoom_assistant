@@ -5,12 +5,12 @@ This example demonstrates how to receive and process incoming transcript data fr
 2. Automatically extract action items from the conversation as the conversation is ongoing
 3. When the meeting ends, create a meeting summary.
 
-<figure class="video_container">
-  <iframe src="/assets/example.mp4" frameborder="0" allowfullscreen="true"> 
-</iframe>
-</figure>
+<p align="center">
+  <img src="assets/example.gif" />
+  <br/>
+  <img src="assets/workflow.png", height=300/>
+</p>
 
-![](/assets/workflow.png)
 
 ## Prerequisites
 
