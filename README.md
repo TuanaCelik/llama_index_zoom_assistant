@@ -1,6 +1,16 @@
 # Zoom Assistant for Notion built with LlamaIndex
 
-This example demonstrates how to receive and process incoming transcript data from a Zoom meeting using the RTMS (Real-Time Media Streaming) service, combined with LlamaIndex, the Notion API and OpenAI to automatically extract action items from the conversation, and create a meeting summary at the end
+This example demonstrates how to receive and process incoming transcript data from a Zoom meeting using the RTMS (Real-Time Media Streaming) service, combined with LlamaIndex, the Notion API and OpenAI to dp a few things: 
+1. Create a new Meeting Notes page in a Notion database when the meeting starts,
+2. Automatically extract action items from the conversation as the conversation is ongoing
+3. When the meeting ends, create a meeting summary.
+
+<figure class="video_container">
+  <iframe src="/assets/example.mp4" frameborder="0" allowfullscreen="true"> 
+</iframe>
+</figure>
+
+![](/assets/workflow.png)
 
 ## Prerequisites
 
@@ -9,8 +19,10 @@ This example demonstrates how to receive and process incoming transcript data fr
 - Zoom App credentials (Client ID and Client Secret)
 - Zoom Secret Token for webhook validation
 - OpenAI API key for Claude access
+- A Notion databse with "Name", "Created at" and "Attendees" properties (see image below)
 - Notion Secret Key and Database ID
 
+![](/assets/database.png)
 ## Setup
 
 1. Install the required dependencies:
@@ -74,3 +86,8 @@ The workflow maintains context by:
 - Using structured LLM calls to identify action items
 - Automatically formatting and organizing content in Notion
 
+## Future Improvements 💚 (open to contributions)
+
+A few things on my wish-list which I have not implemented:
+- Get list of attendees from Zoom RTMS and add it to the `Atendees` property
+- Integrate with email or slack to deal with attendee instructions such as "Bart is missing from this call, send him a reminder please" 
